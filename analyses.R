@@ -83,10 +83,10 @@ for (i in 2:9) {
 }
 
 mean_spans <- as.vector(unlist(lapply(spans,mean)))[1:9]
-cor.test(mean_spans[1:5],c(1:5))  # r = -0.893, p = 0.0412
-cor.test(mean_spans[6:9],c(1:4))  # r = -0.886, p = 0.113
+cor.test(mean_spans[1:5],c(1:5))  # r = -0.891, p = 0.0426
+cor.test(mean_spans[6:9],c(1:4))  # r = -0.890, p = 0.1101
 
-cor.test(mean_spans[1:9],c(1,2,3,4,5,1,2,3,4))  # r = -0.8881784, p = p-value = 0.001378
+cor.test(mean_spans[1:9],c(1,2,3,4,5,1,2,3,4))  # r = -0.887, p = p-value = 0.0014
 
 # rounded numbers for the purpose of an illustration
 round(mean_spans,1)
