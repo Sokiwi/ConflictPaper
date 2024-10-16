@@ -1,4 +1,4 @@
-## This script produces time line illustrations#
+## This script produces time line illustrations
 ## Written by Søren Wichmann with contributions by Andre Santamaria and Oliver Nakoinz
 
 library(ggplot2)
@@ -17,14 +17,14 @@ library(ggplot2)
 
 # run this script by assigning a file names to filename as shown here,
 # and then just execute the remaining code
-# filename <- "indicatormatrix_VolgaGermans.csv"
+# filename <- "indicatormatrix_Rus.csv"
 
 # the function reads csv file and returns a matrix
 # you should change the path so that it corressponds to where it is on your computer
 # the csv files are at https://github.com/Sokiwi/ConflictPaper and just need to
 # be downloaded and unzipped
 readM <- function(filename) {
-  path_to_matrices <- "C:/Wichmann/Adm/ROOTS/editorial work paper/csv_files/"
+  path_to_matrices <- "C:/Wichmann/Adm/ROOTS/editorial work paper/PLOS ONE 2nd submission/"
   M <- read.csv2(file = paste0(path_to_matrices, filename), header = TRUE, sep = ";", row.names = 1)
   M[] <- as.numeric(as.matrix(M[]))
   M <- as.matrix(M)
