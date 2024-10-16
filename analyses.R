@@ -7,7 +7,7 @@ colnames(tss) <- pyramid_cells
 rownames(tss) <- cases
 
 read_tss <- function(filename) {
-  path_to_matrices <- "C:/Wichmann/Adm/ROOTS/editorial work paper/csv_files/"
+  path_to_matrices <- "C:/Wichmann/Adm/ROOTS/editorial work paper/PLOS ONE 2nd submission/"
   M <- read.csv2(file = paste0(path_to_matrices, filename), header = TRUE, sep = ";", row.names = 1)
   M[] <- as.numeric(as.matrix(M[]))
   M <- as.matrix(M)
@@ -84,7 +84,7 @@ for (i in 2:9) {
 
 mean_spans <- as.vector(unlist(lapply(spans,mean)))[1:9]
 cor.test(mean_spans[1:5],c(1:5))  # r = -0.891, p = 0.0426
-cor.test(mean_spans[6:9],c(1:4))  # r = -0.890, p = 0.1101
+cor.test(mean_spans[6:9],c(1:4))  # r = -0.890, p = 0.1102
 
 cor.test(mean_spans[1:9],c(1,2,3,4,5,1,2,3,4))  # r = -0.887, p = p-value = 0.0014
 
@@ -97,7 +97,7 @@ median_spans <- as.vector(unlist(lapply(spans,median)))[1:9]
 ## take means of confidence scores
 ## and study their distribution
 readM <- function(filename) {
-  path_to_matrices <- "C:/Wichmann/Adm/ROOTS/editorial work paper/csv_files/"
+  path_to_matrices <- "C:/Wichmann/Adm/ROOTS/editorial work paper/PLOS ONE 2nd submission/"
   M <- read.csv2(file = paste0(path_to_matrices, filename), header = TRUE, sep = ";", row.names = 1)
   M[] <- as.numeric(as.matrix(M[]))
   M <- as.matrix(M)
@@ -156,7 +156,23 @@ for (i in 1:length(css)) {
 ps_ls <- data.frame(ps, ls)
 write.table(ps_ls, file="ps_ls_new.txt", sep="\t", quote=FALSE, row.names = FALSE)
 
-## routines leading to the plot in current Figure 24
+median0 <- function(x){
+  w_zero <- which(x==0)
+  if (length(w_zero) > 0) {
+    x <- x[-w_zero]
+  }
+  w_na <- which(is.na(x))
+  if (length(w_na) > 0) {
+    x <- x[-w_na]
+  }
+  med0 <- median(x)
+  if(is.na(med0)) {
+    med0 <- 0
+  }
+  return(med0)
+}
+
+## routines leading to the plot in Figure 20
 ## plotting the amount of escalation against the amount of de-escalation
 cases_abb <- c("Bo", "Cr", "He", "Po", "Ro", "Ru", "Sa", "Sc", "Te", "Vo")
 pyramid_cells <- c("c1e", "c2e", "c3e", "c4e", "c5e", "c1d", "c2d", "c3d", "c4d", "c5d")
@@ -179,24 +195,9 @@ abline(coef = c(0, 1),
        col = "red",
        lwd = 1)
 
-## routines leading to the plot in current Figure 24
+## routines leading to the plot in Figure 21
 cases <- c("Bohemia", "Crete", "Hedeby", "Poland", "Rome", "Rus", "Sambia", "Schleswig-Holstein", "Teutonic Order", "Volga Germans")
 
-median0 <- function(x){
-  w_zero <- which(x==0)
-  if (length(w_zero) > 0) {
-    x <- x[-w_zero]
-  }
-  w_na <- which(is.na(x))
-  if (length(w_na) > 0) {
-    x <- x[-w_na]
-  }
-  med0 <- median(x)
-  if(is.na(med0)) {
-    med0 <- 0
-  }
-  return(med0)
-}
 
 Escalation <- c()
 deEscalation <- c()
@@ -205,19 +206,31 @@ for (i in 1:length(css)) {
   med <- apply(css[[i]], 1, median0)
   w_zero <- which(med==0)
   if (length(w_zero) > 0) {
-    med <- med[-w_zero]
+    med[w_zero] <- NA
   }
   spearman_esc <- cor.test(med[1:5], 1:5, method="spearman")
   rho_esc <- spearman_esc$estimate
   Escalation[i] <- rho_esc
+  if (is.na(rho_esc)) {
+    rho_esc <- 0
+  }
   spearman_deesc <- cor.test(med[6:9], 6:9, method="spearman")
   rho_deesc <- spearman_deesc$estimate
+  if (is.na(rho_deesc)) {
+    rho_deesc <- 0
+  }
   deEscalation[i] <- rho_deesc
 }
 
-plot(Escalation, deEscalation, pch=20, ylim=c(-1.1,1.1), xlim=c(-1.1,1.1), xlab="Escalation", ylab="De-escalation")
+# plot(Escalation, deEscalation, pch=20, ylim=c(-1.1,1.1), xlim=c(-1.1,1.1), xlab="Escalation", ylab="De-escalation")
+# text(Escalation, deEscalation + .08, cases)
+# abline(h=0, col="red")
+# abline(v=0, col="red")
+
+plot(Escalation, deEscalation, pch=20, ylim=c(-1.1,1.1), xlim=c(-1.1,1.1), 
+     xlab="Correlation escalation levels ~ confidence scores", 
+     ylab="Correlation de-escalation levels ~ confidence scores")
 text(Escalation, deEscalation + .08, cases)
 abline(h=0, col="red")
 abline(v=0, col="red")
-
 
